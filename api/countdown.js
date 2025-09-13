@@ -17,9 +17,9 @@ try {
 const COLOR = {
   background: '#000000',  // Black background
   
-  timerTop:   '#5A4A8A',  // Lighter purple/indigo top
-  timerMid:   '#4A3A7A',  // Medium purple/indigo middle  
-  timerBot:   '#3A2A6A',  // Darker purple/indigo bottom
+  timerTop:   '#4840BB',  // New purple color
+  timerMid:   '#4840BB',  // New purple color
+  timerBot:   '#4840BB',  // New purple color
   timerShadow:'rgba(0,0,0,0.20)',
 
   panelTop:   '#F8F8F0',  // Off-white/cream top
@@ -30,7 +30,7 @@ const COLOR = {
 
   hinge:      '#000000',  // Pure black hinge
 
-  digit:      '#4A3A7A',  // Dark blue/purple digits (matching timer)
+  digit:      '#4840BB',  // New purple color for digits
   label:      '#FFFFFF'   // White labels
 };
 
@@ -47,7 +47,7 @@ export default async function handler(req, res, isGif = false) {
     const canvas = createCanvas(widthCSS * dpr, heightCSS * dpr);
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, widthCSS, heightCSS);
+    // Don't clear the canvas to maintain transparency
 
     // ---- time ----
     const now = DateTime.now().setZone('Europe/Amsterdam');
@@ -147,21 +147,20 @@ export default async function handler(req, res, isGif = false) {
 /* ===== drawing ===== */
 
 function drawBackground(ctx, x, y, w, h) {
-  // Solid medium gray background
-  ctx.fillStyle = COLOR.background;
-  ctx.fillRect(x, y, w, h);
+  // Transparent background
+  ctx.clearRect(x, y, w, h);
 }
 
 function drawTimerContainer(ctx, x, y, w, h, r) {
   // Realistic timer container with physical depth
   rr(ctx, x, y, w, h, r);
 
-  // Realistic purple/indigo gradient with proper lighting
+  // Realistic purple gradient with proper lighting
   const g = ctx.createLinearGradient(0, y, 0, y + h);
-  g.addColorStop(0.00, '#6A5A9A');  // Lighter top with highlight
-  g.addColorStop(0.30, '#5A4A8A');  // Main color
-  g.addColorStop(0.70, '#4A3A7A');  // Mid tone
-  g.addColorStop(1.00, '#3A2A6A');  // Darker bottom
+  g.addColorStop(0.00, '#4840BB');  // New purple color
+  g.addColorStop(0.30, '#4840BB');  // New purple color
+  g.addColorStop(0.70, '#4840BB');  // New purple color
+  g.addColorStop(1.00, '#4840BB');  // New purple color
   ctx.fillStyle = g;
   ctx.fill();
 
@@ -475,7 +474,7 @@ function drawDigitBold(ctx, d, x, y, w, h, px) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = `${px}px Arial, sans-serif`;
-  ctx.fillStyle = '#4A3A7A';
+  ctx.fillStyle = '#4840BB';
   
   // Draw the digit on both cards (simplified)
   const digitText = String(d);
@@ -565,7 +564,7 @@ async function generateFlipAnimation(widthCSS, heightCSS, dpr, DD, HH, MM, padX,
     const canvas = createCanvas(widthCSS * dpr, heightCSS * dpr);
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, widthCSS, heightCSS);
+    // Don't clear the canvas to maintain transparency
     
     // Draw background
     drawBackground(ctx, 0, 0, widthCSS, heightCSS);
@@ -681,7 +680,7 @@ function drawDigitBoldWithFlip(ctx, d, x, y, w, h, px, flipProgress) {
   const bottomX = cx - px;
   const bottomY = bottomCardCenterY - px * 0.3;
   
-  ctx.fillStyle = '#4A3A7A';
+  ctx.fillStyle = '#4840BB';
   ctx.fillText(digitText, bottomX + px, bottomY + px);
   ctx.restore();
   
@@ -714,7 +713,7 @@ function drawDigitBoldWithFlip(ctx, d, x, y, w, h, px, flipProgress) {
     ctx.shadowOffsetY = 2;
   }
   
-  ctx.fillStyle = '#4A3A7A';
+  ctx.fillStyle = '#4840BB';
   ctx.fillText(digitText, 0, 0);
   ctx.restore();
 }
