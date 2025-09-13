@@ -57,9 +57,11 @@ export default async function handler(req, res, isGif = false) {
     const DD = String(Math.max(0, Math.floor(diff.days ?? 0))).padStart(2,'0');
     const HH = String(Math.max(0, Math.floor(diff.hours ?? 0))).padStart(2,'0');
     const MM = String(Math.max(0, Math.floor(diff.minutes ?? 0))).padStart(2,'0');
+    
+    console.log('Countdown values:', { DD, HH, MM, diff });
 
     // ---- background ----
-    drawBackground(ctx, 0, 0, widthCSS, heightCSS);
+    // Transparent background - no need to draw anything
     
     // ---- timer container ----
     drawTimerContainer(ctx, 0, 0, widthCSS, heightCSS, Math.round(heightCSS * 0.17));
@@ -566,8 +568,7 @@ async function generateFlipAnimation(widthCSS, heightCSS, dpr, DD, HH, MM, padX,
     ctx.scale(dpr, dpr);
     // Don't clear the canvas to maintain transparency
     
-    // Draw background
-    drawBackground(ctx, 0, 0, widthCSS, heightCSS);
+    // Transparent background - no need to draw anything
     
     // Draw timer container
     drawTimerContainer(ctx, 0, 0, widthCSS, heightCSS, Math.round(heightCSS * 0.17));
