@@ -1,15 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/countdown.js",
-      "use": "@vercel/node"
+  "functions": {
+    "api/countdown.js": {
+      "runtime": "edge"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/api/countdown"
-    }
-  ]
+  }
 }
