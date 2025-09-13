@@ -1,5 +1,5 @@
 // api/countdown.js — pixel-by-pixel replica of the provided image
-import { createCanvas, GlobalFonts, loadImage } from '@napi-rs/canvas';
+import { createCanvas, registerFont, loadImage } from 'canvas';
 import { DateTime } from 'luxon';
 import fs from 'fs';
 import path from 'path';
@@ -10,7 +10,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 /* FONT (required for weight). Falls back but we also hard-thicken glyphs. */
 try {
   const fp = path.join(__dirname, '..', 'fonts', 'Inter-Bold.ttf');
-  if (fs.existsSync(fp)) GlobalFonts.registerFromPath(fp, 'InterBold');
+  if (fs.existsSync(fp)) registerFont(fp, { family: 'InterBold' });
 } catch {}
 
 /* Colors measured from the reference */
@@ -818,10 +818,8 @@ function rrect(ctx, x, y, w, h, r, fill) {
 }
 
 function chooseFont(px) {
-  const fams = GlobalFonts.families || [];
-  const hasInter = fams.some(f => f.family === 'InterBold');
-  const fam = hasInter ? 'InterBold' : 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
-  return `${px}px ${fam}`;
+  // For canvas library, we'll use a fallback approach
+  return `${px}px InterBold, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif`;
 }
 
 function clamp(v, min, max, def) {
