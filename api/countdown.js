@@ -470,104 +470,30 @@ function drawDigitBold(ctx, d, x, y, w, h, px) {
   const cardHeight = h / 2;
   const cardSpacing = 3;
   const cx = x + w / 2;
-  const centerY = y + cardHeight; // Where the cards meet
+  const centerY = y + cardHeight;
   
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = chooseFont(px);
-
+  ctx.font = `${px}px Arial, sans-serif`;
+  ctx.fillStyle = '#4A3A7A';
+  
+  // Draw the digit on both cards (simplified)
   const digitText = String(d);
   
-  // Create a temporary canvas to render the digit
-  const tempCanvas = createCanvas(px * 2, px * 2);
-  const tempCtx = tempCanvas.getContext('2d');
-  tempCtx.textAlign = 'center';
-  tempCtx.textBaseline = 'middle';
-  tempCtx.font = chooseFont(px);
-  
-  // Draw the digit on temporary canvas
-  tempCtx.fillStyle = '#2A1A5A';
-  tempCtx.fillText(digitText, px, px);
-  
-  // Get image data
-  const imageData = tempCtx.getImageData(0, 0, px * 2, px * 2);
-  const data = imageData.data;
-  
-  // Exact 50/50 split point
-  const splitPoint = px; // This is exactly half of px * 2
-  const topHeight = px;
-  const bottomHeight = px;
-  
-  // Create top half image data
-  const topImageData = tempCtx.createImageData(px * 2, topHeight);
-  const topData = topImageData.data;
-  
-  // Create bottom half image data  
-  const bottomImageData = tempCtx.createImageData(px * 2, bottomHeight);
-  const bottomData = bottomImageData.data;
-  
-  // Copy top half (first portion of rows)
-  for (let row = 0; row < topHeight; row++) {
-    for (let col = 0; col < px * 2; col++) {
-      const sourceIndex = (row * px * 2 + col) * 4;
-      const destIndex = (row * px * 2 + col) * 4;
-      topData[destIndex] = data[sourceIndex];
-      topData[destIndex + 1] = data[sourceIndex + 1];
-      topData[destIndex + 2] = data[sourceIndex + 2];
-      topData[destIndex + 3] = data[sourceIndex + 3];
-    }
-  }
-  
-  // Copy bottom half (second portion of rows)
-  for (let row = 0; row < bottomHeight; row++) {
-    for (let col = 0; col < px * 2; col++) {
-      const sourceIndex = ((row + splitPoint) * px * 2 + col) * 4;
-      const destIndex = (row * px * 2 + col) * 4;
-      bottomData[destIndex] = data[sourceIndex];
-      bottomData[destIndex + 1] = data[sourceIndex + 1];
-      bottomData[destIndex + 2] = data[sourceIndex + 2];
-      bottomData[destIndex + 3] = data[sourceIndex + 3];
-    }
-  }
-  
-  // Draw top half on top card
+  // Top card
   ctx.save();
   ctx.beginPath();
   ctx.rect(x + 12, y + 8, w - 24, cardHeight - 16);
   ctx.clip();
-  
-  const topCardCenterY = y + cardHeight / 2;
-  const topX = cx - px;
-  const topY = topCardCenterY - px * 0.7; // Move top half higher
-  
-  // Create temporary canvas for top half
-  const topCanvas = createCanvas(px * 2, px);
-  const topCtx = topCanvas.getContext('2d');
-  topCtx.putImageData(topImageData, 0, 0);
-  
-  // Draw top half on top card
-  ctx.drawImage(topCanvas, topX, topY);
-  
+  ctx.fillText(digitText, cx, y + cardHeight/2);
   ctx.restore();
   
-  // Draw bottom half on bottom card
+  // Bottom card
   ctx.save();
   ctx.beginPath();
   ctx.rect(x + 12, y + cardHeight + cardSpacing + 8, w - 24, cardHeight - 16);
   ctx.clip();
-  
-  const bottomCardCenterY = y + cardHeight + cardSpacing + cardHeight / 2;
-  const bottomX = cx - px;
-  const bottomY = bottomCardCenterY - px * 0.3; // Move bottom half lower
-  
-  // Create temporary canvas for bottom half
-  const bottomCanvas = createCanvas(px * 2, px);
-  const bottomCtx = bottomCanvas.getContext('2d');
-  bottomCtx.putImageData(bottomImageData, 0, 0);
-  
-  // Draw bottom half on bottom card
-  ctx.drawImage(bottomCanvas, bottomX, bottomY);
-  
+  ctx.fillText(digitText, cx, y + cardHeight + cardSpacing + cardHeight/2);
   ctx.restore();
 }
 
@@ -575,7 +501,7 @@ function drawLabel(ctx, text, cx, y, px) {
   ctx.fillStyle = COLOR.label;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.font = chooseFont(px);
+  ctx.font = `${px}px Arial, sans-serif`;
   ctx.fillText(text, cx, y);
 }
 
@@ -616,7 +542,7 @@ function drawWalterText(ctx, widthCSS, heightCSS, padY, panelH, labelY, labelPx)
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `bold ${walterPx}px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif`;
+  ctx.font = `bold ${walterPx}px Arial, sans-serif`;
   ctx.fillText('WALTER', widthCSS / 2, walterY);
 }
 
@@ -740,7 +666,7 @@ function drawDigitBoldWithFlip(ctx, d, x, y, w, h, px, flipProgress) {
   
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = chooseFont(px);
+  ctx.font = `${px}px Arial, sans-serif`;
   
   const digitText = String(d);
   const flipAngle = flipProgress * Math.PI;
@@ -755,7 +681,7 @@ function drawDigitBoldWithFlip(ctx, d, x, y, w, h, px, flipProgress) {
   const bottomX = cx - px;
   const bottomY = bottomCardCenterY - px * 0.3;
   
-  ctx.fillStyle = '#2A1A5A';
+  ctx.fillStyle = '#4A3A7A';
   ctx.fillText(digitText, bottomX + px, bottomY + px);
   ctx.restore();
   
@@ -788,7 +714,7 @@ function drawDigitBoldWithFlip(ctx, d, x, y, w, h, px, flipProgress) {
     ctx.shadowOffsetY = 2;
   }
   
-  ctx.fillStyle = '#2A1A5A';
+  ctx.fillStyle = '#4A3A7A';
   ctx.fillText(digitText, 0, 0);
   ctx.restore();
 }
@@ -818,10 +744,8 @@ function rrect(ctx, x, y, w, h, r, fill) {
 }
 
 function chooseFont(px) {
-  const fams = GlobalFonts.families || [];
-  const hasInter = fams.some(f => f.family === 'InterBold');
-  const fam = hasInter ? 'InterBold' : 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
-  return `${px}px ${fam}`;
+  // Always use a fallback font that works on Railway
+  return `${px}px Arial, sans-serif`;
 }
 
 function clamp(v, min, max, def) {
