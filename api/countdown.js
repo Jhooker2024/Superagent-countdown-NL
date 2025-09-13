@@ -472,17 +472,24 @@ function drawDigitBold(ctx, d, x, y, w, h, px) {
   const cardSpacing = 3;
   const cx = x + w / 2;
   
+  // Make text much larger and more visible
+  const fontSize = Math.max(px, 48);
+  
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `bold ${px}px Arial, sans-serif`;
-  ctx.fillStyle = '#4840BB';
+  ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+  ctx.fillStyle = '#000000'; // Black text for maximum visibility
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = 2;
   
   const digitText = String(d);
   
-  // Draw digit on top card
+  // Draw digit on top card with stroke for visibility
+  ctx.strokeText(digitText, cx, y + cardHeight/2);
   ctx.fillText(digitText, cx, y + cardHeight/2);
   
-  // Draw digit on bottom card  
+  // Draw digit on bottom card with stroke for visibility
+  ctx.strokeText(digitText, cx, y + cardHeight + cardSpacing + cardHeight/2);
   ctx.fillText(digitText, cx, y + cardHeight + cardSpacing + cardHeight/2);
 }
 
