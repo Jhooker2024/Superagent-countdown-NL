@@ -9,7 +9,7 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "@vercel/og": "^0.0.21",
+    "@napi-rs/canvas": "^0.1.55",
     "luxon": "^3.5.0",
     "express": "^4.19.2"
   }
