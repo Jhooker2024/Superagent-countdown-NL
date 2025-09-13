@@ -4,5 +4,15 @@
     "api/countdown.js": {
       "runtime": "edge"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/countdown.png",
+      "dest": "/api/countdown"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/countdown"
+    }
+  ]
 }
