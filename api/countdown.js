@@ -1,4 +1,4 @@
-// WORKING COUNTDOWN - HTML solution that definitely works on Railway
+// Beautiful flip card countdown using SVG - exact design restoration
 import { DateTime } from 'luxon';
 
 const TARGET = DateTime.fromISO('2025-10-01T00:00:00', { zone: 'Europe/Amsterdam' });
@@ -13,91 +13,68 @@ export default async function handler(req, res) {
     const HH = String(Math.max(0, Math.floor(diff.hours ?? 0))).padStart(2, '0');
     const MM = String(Math.max(0, Math.floor(diff.minutes ?? 0))).padStart(2, '0');
 
-    const html = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>WALTER Countdown</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #4840BB;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .timer-container {
-            background: linear-gradient(180deg, #4840BB 0%, #3A2A6A 100%);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            margin-bottom: 40px;
-        }
-        .countdown {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            align-items: center;
-        }
-        .time-group {
-            text-align: center;
-        }
-        .time-value {
-            background: linear-gradient(180deg, #F8F8F0 0%, #F0F0E8 100%);
-            color: #4840BB;
-            padding: 20px 30px;
-            border-radius: 12px;
-            font-size: 64px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            border: 2px solid #C8C8C0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            min-width: 120px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .time-label {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        .walter {
-            font-size: 72px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-    </style>
-</head>
-<body>
-    <div class="timer-container">
-        <div class="countdown">
-            <div class="time-group">
-                <div class="time-value">${DD}</div>
-                <div class="time-label">DAGEN</div>
-            </div>
-            <div class="time-group">
-                <div class="time-value">${HH}</div>
-                <div class="time-label">UREN</div>
-            </div>
-            <div class="time-group">
-                <div class="time-value">${MM}</div>
-                <div class="time-label">MINUTEN</div>
-            </div>
-        </div>
-    </div>
-    <div class="walter">WALTER</div>
-</body>
-</html>`;
+    const width = 1200;
+    const height = 600;
 
-    res.setHeader('Content-Type', 'text/html');
+    const svg = `
+<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="timerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4840BB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4840BB;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F8F0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F0F0E8;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="4" dy="6" stdDeviation="8" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+    <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.6)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#4840BB"/>
+  
+  <!-- Timer container -->
+  <rect x="0" y="0" width="${width}" height="${height * 0.17}" rx="20" fill="url(#timerGrad)" filter="url(#shadow)"/>
+  
+  <!-- Days Panel -->
+  <g transform="translate(150, 100)">
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="url(#panelGrad)" stroke="#C8C8C0" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="0" y="40" width="120" height="40" rx="8" fill="url(#panelGrad)" stroke="#C8C8C0" stroke-width="1" filter="url(#cardShadow)"/>
+    <line x1="0" y1="40" x2="120" y2="40" stroke="#000000" stroke-width="3"/>
+    <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#4840BB">${DD}</text>
+    <text x="60" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">DAGEN</text>
+  </g>
+  
+  <!-- Hours Panel -->
+  <g transform="translate(450, 100)">
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="url(#panelGrad)" stroke="#C8C8C0" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="0" y="40" width="120" height="40" rx="8" fill="url(#panelGrad)" stroke="#C8C8C0" stroke-width="1" filter="url(#cardShadow)"/>
+    <line x1="0" y1="40" x2="120" y2="40" stroke="#000000" stroke-width="3"/>
+    <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#4840BB">${HH}</text>
+    <text x="60" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">UREN</text>
+  </g>
+  
+  <!-- Minutes Panel -->
+  <g transform="translate(750, 100)">
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="url(#panelGrad)" stroke="#C8C8C0" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="0" y="40" width="120" height="40" rx="8" fill="url(#panelGrad)" stroke="#C8C8C0" stroke-width="1" filter="url(#cardShadow)"/>
+    <line x1="0" y1="40" x2="120" y2="40" stroke="#000000" stroke-width="3"/>
+    <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#4840BB">${MM}</text>
+    <text x="60" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">MINUTEN</text>
+  </g>
+  
+  <!-- WALTER Text -->
+  <text x="${width/2}" y="450" text-anchor="middle" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#FFFFFF">WALTER</text>
+</svg>`;
+
+    res.setHeader('Content-Type', 'image/svg+xml');
     res.setHeader('Cache-Control', 'public, max-age=60');
-    res.status(200).send(html);
+    res.status(200).send(svg);
   } catch (e) {
     console.error(e);
     res.status(500).send('Error: ' + e.message);
