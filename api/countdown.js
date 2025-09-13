@@ -471,31 +471,19 @@ function drawDigitBold(ctx, d, x, y, w, h, px) {
   const cardHeight = h / 2;
   const cardSpacing = 3;
   const cx = x + w / 2;
-  const centerY = y + cardHeight;
   
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `${px}px Arial, sans-serif`;
+  ctx.font = `bold ${px}px Arial, sans-serif`;
   ctx.fillStyle = '#4840BB';
   
-  // Draw the digit on both cards (simplified)
   const digitText = String(d);
   
-  // Top card
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(x + 12, y + 8, w - 24, cardHeight - 16);
-  ctx.clip();
+  // Draw digit on top card
   ctx.fillText(digitText, cx, y + cardHeight/2);
-  ctx.restore();
   
-  // Bottom card
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(x + 12, y + cardHeight + cardSpacing + 8, w - 24, cardHeight - 16);
-  ctx.clip();
+  // Draw digit on bottom card  
   ctx.fillText(digitText, cx, y + cardHeight + cardSpacing + cardHeight/2);
-  ctx.restore();
 }
 
 function drawLabel(ctx, text, cx, y, px) {
@@ -666,55 +654,18 @@ function drawDigitBoldWithFlip(ctx, d, x, y, w, h, px, flipProgress) {
   
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `${px}px Arial, sans-serif`;
+  ctx.font = `bold ${px}px Arial, sans-serif`;
+  ctx.fillStyle = '#4840BB';
   
   const digitText = String(d);
-  const flipAngle = flipProgress * Math.PI;
   
-  // Bottom half (always visible)
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(x + 12, y + cardHeight + cardSpacing + 8, w - 24, cardHeight - 16);
-  ctx.clip();
+  // Draw digit on bottom card (always visible)
+  ctx.fillText(digitText, cx, y + cardHeight + cardSpacing + cardHeight/2);
   
-  const bottomCardCenterY = y + cardHeight + cardSpacing + cardHeight / 2;
-  const bottomX = cx - px;
-  const bottomY = bottomCardCenterY - px * 0.3;
-  
-  ctx.fillStyle = '#4840BB';
-  ctx.fillText(digitText, bottomX + px, bottomY + px);
-  ctx.restore();
-  
-  // Top half with enhanced flip animation
+  // Draw digit on top card (with flip animation)
   ctx.save();
   ctx.translate(cx, y + cardHeight/2);
-  
-  // Add physics-based scaling and skewing
-  const scale = 1 - (Math.sin(flipAngle) * 0.15); // Scale down during flip
-  const skewX = Math.sin(flipAngle) * 0.05; // Slight skew
-  
-  ctx.scale(scale, scale);
-  ctx.skewX(skewX);
-  ctx.rotate(flipAngle);
-  ctx.translate(-px, -px * 0.7);
-  
-  // Add perspective distortion
-  const perspective = Math.sin(flipAngle) * 0.1;
-  ctx.transform(1, 0, perspective, 1, 0, 0);
-  
-  ctx.beginPath();
-  ctx.rect(-px + 12, -px * 0.7 + 8, w - 24, cardHeight - 16);
-  ctx.clip();
-  
-  // Add shadow during flip
-  if (flipProgress > 0.2 && flipProgress < 0.8) {
-    ctx.shadowColor = 'rgba(0,0,0,0.2)';
-    ctx.shadowBlur = 4;
-    ctx.shadowOffsetX = 1;
-    ctx.shadowOffsetY = 2;
-  }
-  
-  ctx.fillStyle = '#4840BB';
+  ctx.rotate(flipProgress * Math.PI);
   ctx.fillText(digitText, 0, 0);
   ctx.restore();
 }
