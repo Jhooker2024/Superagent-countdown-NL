@@ -1,0 +1,11 @@
+{
+  "name": "walter-countdown",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.55",
+    "luxon": "^3.5.0",
+    "express": "^4.19.2"
+  }
+}
