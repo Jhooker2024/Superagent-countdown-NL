@@ -4,7 +4,11 @@ import { DateTime } from 'luxon';
 
 const TARGET = DateTime.fromISO('2025-10-01T00:00:00', { zone: 'Europe/Amsterdam' });
 
-export default async function handler(req, res) {
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
   try {
     const now = DateTime.now().setZone('Europe/Amsterdam');
     let diff = TARGET.diff(now, ['days', 'hours', 'minutes']).toObject();
@@ -30,7 +34,6 @@ export default async function handler(req, res) {
             padding: '40px',
           }}
         >
-          {/* Timer Container */}
           <div
             style={{
               display: 'flex',
@@ -39,7 +42,6 @@ export default async function handler(req, res) {
               marginBottom: '40px',
             }}
           >
-            {/* Days */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div
                 style={{
@@ -77,7 +79,6 @@ export default async function handler(req, res) {
               </div>
             </div>
 
-            {/* Hours */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div
                 style={{
@@ -115,7 +116,6 @@ export default async function handler(req, res) {
               </div>
             </div>
 
-            {/* Minutes */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div
                 style={{
@@ -154,7 +154,6 @@ export default async function handler(req, res) {
             </div>
           </div>
 
-          {/* WALTER Text */}
           <div
             style={{
               fontSize: '72px',
