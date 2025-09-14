@@ -6,8 +6,3 @@
   from = "/api/countdown.png"
   to = "/.netlify/functions/countdown"
   status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
