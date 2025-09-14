@@ -25,6 +25,8 @@ exports.handler = async (event, context) => {
     const HH = String(Math.max(0, Math.floor(diff.hours ?? 0))).padStart(2,'0');
     const MM = String(Math.max(0, Math.floor(diff.minutes ?? 0))).padStart(2,'0');
 
+    console.log('Countdown values:', { DD, HH, MM });
+
     const width = 800;
     const height = 400;
     const canvas = createCanvas(width, height);
@@ -58,7 +60,7 @@ exports.handler = async (event, context) => {
     const panelW = 80;
     const panelH = 120;
     const panelSpacing = 20;
-    const startX = (width - (5 * panelW + 4 * panelSpacing)) / 2;
+    const startX = (width - (6 * panelW + 5 * panelSpacing)) / 2;
     const startY = 80;
 
     const drawFlipCard = (x, y, digit, isFirstDigit) => {
@@ -135,7 +137,7 @@ exports.handler = async (event, context) => {
       return 'MINUTEN';
     };
 
-    // Draw all panels
+    // Draw all panels - 6 total (2 for each time unit)
     drawFlipCard(startX, startY, DD[0], true);
     drawFlipCard(startX + panelW + panelSpacing, startY, DD[1], false);
     drawFlipCard(startX + 2 * (panelW + panelSpacing), startY, HH[0], true);
