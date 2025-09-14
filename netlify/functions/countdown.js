@@ -1,17 +1,4 @@
-const { createCanvas, registerFont, loadImage } = require('canvas');
 const { DateTime } = require('luxon');
-const fs = require('fs');
-const path = require('path');
-
-// Register font
-try {
-  const fontPath = path.join(__dirname, '../../fonts/Inter-Bold.ttf');
-  if (fs.existsSync(fontPath)) {
-    registerFont(fontPath, { family: 'InterBold' });
-  }
-} catch (e) {
-  console.log('Font registration failed:', e.message);
-}
 
 const TARGET = DateTime.fromISO('2025-10-01T00:00:00', { zone: 'Europe/Amsterdam' });
 
@@ -25,122 +12,96 @@ exports.handler = async (event, context) => {
     const HH = String(Math.max(0, Math.floor(diff.hours ?? 0))).padStart(2,'0');
     const MM = String(Math.max(0, Math.floor(diff.minutes ?? 0))).padStart(2,'0');
 
-    const width = 800;
-    const height = 400;
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext('2d');
-
-    // Clear background
-    ctx.clearRect(0, 0, width, height);
-
-    // Draw purple background
-    const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, '#4840BB');
-    gradient.addColorStop(1, '#4840BB');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-
-    // Draw timer container with rounded corners
-    const containerX = 50;
-    const containerY = 50;
-    const containerW = width - 100;
-    const containerH = height - 100;
-    const radius = 20;
-
-    ctx.fillStyle = '#4840BB';
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-    ctx.lineWidth = 2;
-    
-    // Draw rounded rectangle
-    ctx.beginPath();
-    ctx.moveTo(containerX + radius, containerY);
-    ctx.arcTo(containerX + containerW, containerY, containerX + containerW, containerY + containerH, radius);
-    ctx.arcTo(containerX + containerW, containerY + containerH, containerX, containerY + containerH, radius);
-    ctx.arcTo(containerX, containerY + containerH, containerX, containerY, radius);
-    ctx.arcTo(containerX, containerY, containerX + containerW, containerY, radius);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Draw countdown panels
-    const panelW = 80;
-    const panelH = 120;
-    const panelSpacing = 20;
-    const startX = (width - (3 * panelW + 2 * panelSpacing)) / 2;
-    const startY = 100;
-
-    const drawPanel = (x, y, digit, label) => {
-      // Draw white panel with shadow
-      ctx.shadowColor = 'rgba(0,0,0,0.3)';
-      ctx.shadowBlur = 8;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 4;
+    // Return SVG instead of canvas
+    const svg = `
+    <svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#4840BB;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#4840BB;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.3)"/>
+        </filter>
+      </defs>
       
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(x, y, panelW, panelH);
+      <!-- Background -->
+      <rect width="800" height="400" fill="url(#bg)" rx="20"/>
       
-      ctx.shadowColor = 'transparent';
+      <!-- Timer Container -->
+      <rect x="50" y="50" width="700" height="300" fill="#4840BB" stroke="rgba(255,255,255,0.2)" stroke-width="2" rx="20"/>
       
-      // Draw hinge line
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(x + 8, y + panelH/2);
-      ctx.lineTo(x + panelW - 8, y + panelH/2);
-      ctx.stroke();
+      <!-- Days Panel -->
+      <g transform="translate(150, 100)">
+        <rect x="0" y="0" width="80" height="120" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+        <line x1="8" y1="60" x2="72" y2="60" stroke="#000000" stroke-width="3"/>
+        <circle cx="12" cy="60" r="4" fill="#000000"/>
+        <circle cx="68" cy="60" r="4" fill="#000000"/>
+        <text x="40" y="70" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#4840BB">${DD[0]}</text>
+        <text x="40" y="140" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#FFFFFF">DAGEN</text>
+      </g>
       
-      // Draw hinge pins
-      ctx.fillStyle = '#000000';
-      ctx.beginPath();
-      ctx.arc(x + 12, y + panelH/2, 4, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(x + panelW - 12, y + panelH/2, 4, 0, 2 * Math.PI);
-      ctx.fill();
+      <g transform="translate(250, 100)">
+        <rect x="0" y="0" width="80" height="120" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+        <line x1="8" y1="60" x2="72" y2="60" stroke="#000000" stroke-width="3"/>
+        <circle cx="12" cy="60" r="4" fill="#000000"/>
+        <circle cx="68" cy="60" r="4" fill="#000000"/>
+        <text x="40" y="70" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#4840BB">${DD[1]}</text>
+      </g>
       
-      // Draw digit
-      ctx.fillStyle = '#4840BB';
-      ctx.font = 'bold 48px Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(digit, x + panelW/2, y + panelH/2);
+      <!-- Hours Panel -->
+      <g transform="translate(400, 100)">
+        <rect x="0" y="0" width="80" height="120" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+        <line x1="8" y1="60" x2="72" y2="60" stroke="#000000" stroke-width="3"/>
+        <circle cx="12" cy="60" r="4" fill="#000000"/>
+        <circle cx="68" cy="60" r="4" fill="#000000"/>
+        <text x="40" y="70" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#4840BB">${HH[0]}</text>
+        <text x="40" y="140" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#FFFFFF">UREN</text>
+      </g>
       
-      // Draw label
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 24px Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText(label, x + panelW/2, y + panelH + 10);
-    };
+      <g transform="translate(500, 100)">
+        <rect x="0" y="0" width="80" height="120" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+        <line x1="8" y1="60" x2="72" y2="60" stroke="#000000" stroke-width="3"/>
+        <circle cx="12" cy="60" r="4" fill="#000000"/>
+        <circle cx="68" cy="60" r="4" fill="#000000"/>
+        <text x="40" y="70" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#4840BB">${HH[1]}</text>
+      </g>
+      
+      <!-- Minutes Panel -->
+      <g transform="translate(550, 100)">
+        <rect x="0" y="0" width="80" height="120" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+        <line x1="8" y1="60" x2="72" y2="60" stroke="#000000" stroke-width="3"/>
+        <circle cx="12" cy="60" r="4" fill="#000000"/>
+        <circle cx="68" cy="60" r="4" fill="#000000"/>
+        <text x="40" y="70" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#4840BB">${MM[0]}</text>
+        <text x="40" y="140" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#FFFFFF">MINUTEN</text>
+      </g>
+      
+      <g transform="translate(650, 100)">
+        <rect x="0" y="0" width="80" height="120" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+        <line x1="8" y1="60" x2="72" y2="60" stroke="#000000" stroke-width="3"/>
+        <circle cx="12" cy="60" r="4" fill="#000000"/>
+        <circle cx="68" cy="60" r="4" fill="#000000"/>
+        <text x="40" y="70" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#4840BB">${MM[1]}</text>
+      </g>
+      
+      <!-- WALTER Text -->
+      <text x="400" y="350" text-anchor="middle" font-family="Arial" font-size="48" font-weight="bold" fill="#FFFFFF">WALTER</text>
+    </svg>`;
 
-    // Draw panels
-    drawPanel(startX, startY, DD, 'DAGEN');
-    drawPanel(startX + panelW + panelSpacing, startY, HH, 'UREN');
-    drawPanel(startX + 2 * (panelW + panelSpacing), startY, MM, 'MINUTEN');
-
-    // Draw WALTER text
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 48px Arial, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('WALTER', width/2, height - 50);
-
-    const buffer = canvas.toBuffer('image/png');
-    
     return {
       statusCode: 200,
       headers: {
-        'Content-Type': 'image/png',
+        'Content-Type': 'image/svg+xml',
         'Cache-Control': 'public, max-age=60'
       },
-      body: buffer.toString('base64'),
-      isBase64Encoded: true
+      body: svg
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: 'Error generating image'
+      body: 'Error generating countdown'
     };
   }
 };
