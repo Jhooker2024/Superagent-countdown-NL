@@ -3,15 +3,9 @@
   "private": true,
   "type": "module",
   "version": "1.0.0",
-  "scripts": {
-    "build": "echo 'Build complete'",
-    "dev": "node server.js"
-  },
   "dependencies": {
     "@napi-rs/canvas": "^0.1.55",
-    "luxon": "^3.5.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "luxon": "^3.5.0",
+    "express": "^4.19.2"
   }
 }
