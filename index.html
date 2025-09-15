@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walter Countdown</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: linear-gradient(135deg, #4840BB 0%, #4840BB 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+        }
+        
+        .countdown {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .time-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .digits {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .digit-card {
+            width: 80px;
+            height: 120px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+            position: relative;
+            font-size: 48px;
+            font-weight: bold;
+            color: #4840BB;
+        }
+        
+        .digit-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            right: 8px;
+            height: 3px;
+            background: #000000;
+            transform: translateY(-50%);
+        }
+        
+        .digit-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            width: 8px;
+            height: 8px;
+            background: #000000;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .digit-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: #000000;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .label {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-top: 16px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .walter {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="countdown">
+            <div class="time-group">
+                <div class="digits">
+                    <div class="digit-card" id="days-tens">0</div>
+                    <div class="digit-card" id="days-ones">0</div>
+                </div>
+                <div class="label">DAGEN</div>
+            </div>
+            
+            <div class="time-group">
+                <div class="digits">
+                    <div class="digit-card" id="hours-tens">0</div>
+                    <div class="digit-card" id="hours-ones">0</div>
+                </div>
+                <div class="label">UREN</div>
+            </div>
+            
+            <div class="time-group">
+                <div class="digits">
+                    <div class="digit-card" id="minutes-tens">0</div>
+                    <div class="digit-card" id="minutes-ones">0</div>
+                </div>
+                <div class="label">MINUTEN</div>
+            </div>
+        </div>
+        
+        <div class="walter">WALTER</div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const target = new Date('2025-10-01T00:00:00+02:00'); // Amsterdam time
+            const now = new Date();
+            const diff = target - now;
+            
+            if (diff <= 0) {
+                document.getElementById('days-tens').textContent = '0';
+                document.getElementById('days-ones').textContent = '0';
+                document.getElementById('hours-tens').textContent = '0';
+                document.getElementById('hours-ones').textContent = '0';
+                document.getElementById('minutes-tens').textContent = '0';
+                document.getElementById('minutes-ones').textContent = '0';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            const daysStr = days.toString().padStart(2, '0');
+            const hoursStr = hours.toString().padStart(2, '0');
+            const minutesStr = minutes.toString().padStart(2, '0');
+            
+            document.getElementById('days-tens').textContent = daysStr[0];
+            document.getElementById('days-ones').textContent = daysStr[1];
+            document.getElementById('hours-tens').textContent = hoursStr[0];
+            document.getElementById('hours-ones').textContent = hoursStr[1];
+            document.getElementById('minutes-tens').textContent = minutesStr[0];
+            document.getElementById('minutes-ones').textContent = minutesStr[1];
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
